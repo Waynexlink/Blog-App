@@ -1,14 +1,26 @@
-const express = require("express");
+var express = require("express");
+const {
+  createBlog,
+  getAllBlogs,
+  deleteBlog,
+  getBlog,
+  updateTour,
+} = require("../controllers/blogController");
+const blogController = "../controllers/blogController.js";
+
+//STARTING UP ROUTER
 const blogRoute = express.Router();
 
 // Define routes
-blogRoute.get("/", (req, res) => {
-  res.send("This is the blog route");
-});
+blogRoute.get("/", getAllBlogs);
 
-blogRoute.post("/", (req, res) => {
-  res.send("Create a new blog post");
-});
+blogRoute.post("/", createBlog);
+
+blogRoute.get("/:id", getBlog);
+
+blogRoute.patch("/:id", updateTour);
+
+blogRoute.delete("/:id", deleteBlog);
 
 // Export the router
 module.exports = blogRoute;

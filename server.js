@@ -23,7 +23,7 @@ mongoose
 //BODYPARSER MIDDLEWARE
 app.use(express.json());
 app.use(morgan("tiny"));
-
+//try
 app.use("/blog", blogRoute);
 //STARTING UP SERVER
 app.get("/", (req, res) => {
