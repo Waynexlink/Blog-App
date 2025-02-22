@@ -1,5 +1,10 @@
 var express = require("express");
 const {
+  validateBlogPostCreation,
+  validateBlogId,
+  handleValidationError,
+} = require("../middlewares/validateRoute");
+const {
   createBlog,
   getAllBlogs,
   deleteBlog,
@@ -14,13 +19,18 @@ const blogRoute = express.Router();
 // Define routes
 blogRoute.get("/", getAllBlogs);
 
-blogRoute.post("/", createBlog);
+blogRoute.post(
+  "/",
+  validateBlogPostCreation,
+  handleValidationError,
+  createBlog
+);
 
-blogRoute.get("/:id", getBlog);
+blogRoute.get("/:id", validateBlogId, handleValidationError, getBlog);
 
-blogRoute.patch("/:id", updateTour);
+blogRoute.patch("/:id", validateBlogId, handleValidationError, updateTour);
 
-blogRoute.delete("/:id", deleteBlog);
+blogRoute.delete("/:id", validateBlogId, handleValidationError, deleteBlog);
 
 // Export the router
 module.exports = blogRoute;

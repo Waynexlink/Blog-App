@@ -13,7 +13,13 @@ const blogSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  message: {
+  title: {
+    type: String,
+    required: [true, "input a valid tilte"],
+    unique: true,
+    //okay
+  },
+  body: {
     type: String,
     required: [true, "input a valid post"],
   },
