@@ -6,7 +6,7 @@
 
 ## 🔍 Description
 
-This is a **RESTful API** built using **Node.js** and **Express** that allows users to create, read, update, and delete blog posts. The API supports advanced querying features like filtering, pagination, and sorting.
+This is a **RESTful API** built using **Node.js** and **Express** and **MongoDB** that allows users to create, read, update, and delete blog posts. The API supports advanced querying features like filtering, pagination, and sorting.
 
 ## 📚 Table of Contents
 
