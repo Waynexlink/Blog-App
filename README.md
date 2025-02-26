@@ -1,4 +1,4 @@
-# 📓 Personal Blogging Platform API
+# 📓 Personal Blogging Platform API By Williams
 
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Node.js](https://img.shields.io/badge/Node.js-18.x-brightgreen)
