@@ -62,7 +62,7 @@ This is a **RESTful API** built using **Node.js** and **Express** and **MongoDB*
 4. Create a `.env` file and add the following:
 
    ```env
-   DATABASE_CONNECTION_URI=your-mongodb-uri
+   MONGO_URI=your-mongodb-uri
    PORT=3000
    ```
 

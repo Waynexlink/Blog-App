@@ -9,7 +9,7 @@ const {
   getAllBlogs,
   deleteBlog,
   getBlog,
-  updateTour,
+  updateBlog,
 } = require("../controllers/blogController");
 const blogController = "../controllers/blogController.js";
 
@@ -28,7 +28,7 @@ blogRoute.post(
 
 blogRoute.get("/:id", validateBlogId, handleValidationError, getBlog);
 
-blogRoute.patch("/:id", validateBlogId, handleValidationError, updateTour);
+blogRoute.patch("/:id", validateBlogId, handleValidationError, updateBlog);
 
 blogRoute.delete("/:id", validateBlogId, handleValidationError, deleteBlog);
 

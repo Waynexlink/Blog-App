@@ -1,122 +1,64 @@
 const { query } = require("express");
 const Blog = require("../models/blogModel");
+const apiFeatures = require("../utils/apiFeatures");
+const AppError = require("../utils/AppError");
+const catchAsync = require("../utils/utilAsync");
 
-exports.getAllBlogs = async (req, res) => {
-  try {
-    const queryObj = { ...req.query };
-    //FILTERING
-    const excludedField = ["page", "sort", "limit", "field"];
-    excludedField.forEach((el) => {
-      delete queryObj[el];
-    });
+exports.getAllBlogs = catchAsync(async (req, res) => {
+  const features = new apiFeatures(Blog.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
 
-    let query = Blog.find(queryObj);
+  const blogs = await features.query;
+  res.status(200).json({
+    //SUCCESS MESSAGE
+    status: "success",
+    result: blogs.length,
+    data: {
+      blogs,
+    },
+  });
+});
+exports.createBlog = catchAsync(async (req, res) => {
+  const newBlog = await Blog.create(req.body);
+  res.status(201).json({
+    status: "success",
+    message: "Blog successfully created",
+    data: {
+      newBlog,
+    },
+  });
+});
+exports.deleteBlog = catchAsync(async (req, res) => {
+  const blog = await Blog.findByIdAndDelete(req.params.id);
+  if (!blog) return next(new AppError("Blog not found ", 404));
+  res.status(204).end();
+});
+exports.getBlog = catchAsync(async (req, res) => {
+  const blog = await Blog.findById(req.params.id);
+  if (!blog) return next(new AppError("Blog not found ", 404));
+  res.status(200).json({
+    status: "success",
+    message: "Blog retrived successfully",
+    data: {
+      blog,
+    },
+  });
+});
 
-    //SORTING
+exports.updateBlog = catchAsync(async (req, res) => {
+  const doc = await Blog.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(",").join(" ");
-      query = query.sort(sortBy);
-    } else {
-      query = query.sort("-dataCreated");
-    }
-    //FIELD LIMITING
-    if (req.query.fields) {
-      const fields = req.query.field.split(",").join(" ");
-      query = query.select(fields);
-    } else {
-      query = query.select("-__v");
-    }
-
-    //PAGINATION
-    const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 10;
-    const skip = (page - 1) * limit;
-    query.skip(skip).limit(limit);
-
-    const blogs = await query;
-
-    res.status(200).json({
-      //SUCCESS MESSAGE
-      status: "success",
-      result: blogs.length,
-      data: {
-        blogs,
-      },
-    });
-  } catch (error) {
-    //ERROR MESSAGE
-    res.status(404).json({
-      status: "failure",
-      message: error.message,
-    });
-  }
-};
-exports.createBlog = async (req, res) => {
-  try {
-    console.log;
-    const newBlog = await Blog.create(req.body);
-    res.status(201).json({
-      //SUCCESS MESSAGE
-      status: "success",
-      data: {
-        newBlog,
-      },
-    });
-  } catch (error) {
-    res.status(400).json({
-      status: "failure",
-      message: error.message,
-    });
-  }
-};
-exports.deleteBlog = async (req, res) => {
-  try {
-    const blog = Blog.findByIdAndDelete(req.params.id);
-    res.status(204).json({
-      status: "success",
-      data: blog,
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
-};
-exports.getBlog = async (req, res) => {
-  try {
-    const blog = await Blog.findById(req.params.id);
-    res.status(200).json({
-      status: "success",
-      data: {
-        blog,
-      },
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
-};
-
-exports.updateTour = async (req, res) => {
-  try {
-    const blog = Blog.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    res.status(200).json({
-      status: "success",
-      data: {
-        blog,
-      },
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: "fail",
-      message: err.message,
-    });
-  }
-};
+  if (!doc) return next(new AppError("Nothing to update here", 404));
+  res.status(200).json({
+    status: "success",
+    data: {
+      doc,
+    },
+  });
+});

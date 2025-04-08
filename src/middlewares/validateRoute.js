@@ -1,21 +1,25 @@
+// src/middlewares/validateMiddleware.js
 const { body, param, validationResult } = require("express-validator");
 
 const validateBlogPostCreation = [
   body("title")
     .isString()
-    .isLength({ min: 5 })
-    .withMessage("title must contain more than 20 character"),
+    .withMessage("Title must be a string.")
+    .trim()
+    .isLength({ min: 5, max: 100 })
+    .withMessage("Title must be between 5 and 100 characters long."),
   body("body")
     .isString()
+    .withMessage("Body must be a string.")
+    .trim()
     .isLength({ min: 20 })
-    .withMessage("title must contain more than 20000 character"),
-  body("tag")
-    .optional()
-    .isString()
-    .withMessage("tag should be a string of array"),
+    .withMessage("Body must be at least 20 characters long."),
+  body("tag").optional().isString().withMessage("Tag should be a string."),
 ];
 
-const validateBlogId = [param("id").isMongoId().withMessage("invalidid")];
+const validateBlogId = [
+  param("id").isMongoId().withMessage("Invalid blog ID format."),
+];
 
 const handleValidationError = (req, res, next) => {
   const errors = validationResult(req);
